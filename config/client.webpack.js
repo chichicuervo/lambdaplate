@@ -1,9 +1,11 @@
-const _ = require( 'lodash' );
+const fs = require('fs')
 const path = require( 'path' );
 const webpack = require( 'webpack' );
 const sls = require( 'serverless-webpack' );
 
-const CleanWebpackPlugin = require( 'clean-webpack-plugin' );
+const { compact } = require( 'lodash' );
+
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
 const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
@@ -13,6 +15,9 @@ const DEV_MODE = sls.lib.webpack.isLocal || process.env.IS_OFFLINE || process.en
 const BUILD_DIR = path.resolve( ROOT_DIR, "dist" )
 
 const config = async () => {
+
+	const server_params = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'dev.config.json')) || '')
+
 	return {
 		target: 'web',
 		entry: [
@@ -20,14 +25,14 @@ const config = async () => {
             path.resolve( ROOT_DIR, 'src/client/index.js' ),
         ],
 		mode: DEV_MODE ? "development" : "production",
-		plugins: _.compact( [
+		plugins: compact( [
             new webpack.DefinePlugin( {
 				DEV_MODE: DEV_MODE,
 				'process.env.BROWSER': true,
 				'process.env.NODE_ENV': DEV_MODE ? '"development"' : '"production"'
 			} ),
             new HtmlWebpackPlugin( {
-				// put plugin params here
+				template: path.resolve(ROOT_DIR, 'src/index.html')
 			} ),
             // DEV_MODE ? new webpack.HotModuleReplacementPlugin() : null,
             !DEV_MODE && new CleanWebpackPlugin( [ BUILD_DIR ] ),
@@ -55,8 +60,21 @@ const config = async () => {
 					loader: 'file-loader',
 					options: {
 						name: '[name].[ext]',
+						outputPath: 'assets'
 					}
 				}
+			}, {
+		        test: /\.(png|svg|jpg|gif)$/,
+		        use: {
+		            loader: 'file-loader',
+		            options: {
+		                name: '[name].[ext]',
+		                outputPath: 'assets'
+		            }
+		        }
+		    }, {
+		        test: /\.mdx?$/,
+		        use: [ 'babel-loader', '@mdx-js/loader' ]
             } ]
 		},
 		optimization: {
@@ -68,7 +86,7 @@ const config = async () => {
 		},
 		output: {
 			path: BUILD_DIR,
-			filename: '[name].js',
+			filename: 'assets/[name].js',
 			publicPath: "/",
 		},
 		resolve: {
@@ -80,8 +98,8 @@ const config = async () => {
 		devServer: {
 			historyApiFallback: true,
 			disableHostCheck: true,
-			host: '0.0.0.0',
-			port: 3001,
+			host: server_params.proxy_host || 'localhost',
+			port: server_params.proxy_port || 3001,
 			hot: true
 		},
 

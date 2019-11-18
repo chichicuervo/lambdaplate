@@ -11,7 +11,7 @@ plugins:
 
 provider:
     name: aws
-    runtime: nodejs8.10
+    runtime: nodejs10.x
     stage: ${opt:stage, 'dev'}
     region: ${opt:region, 'us-west-2'}
     profile: ${self:custom.profiles.${self:provider.stage}, 'default'}
@@ -20,11 +20,14 @@ package:
     individually: true
 
 custom:
+    devParams: ${file(config/dev.config.json)}
+
     serverless-offline:
-        host: 0.0.0.0
+        host: ${self:custom.devParams.dev_host, "0.0.0.0"}
+        port: ${self:custom.devParams.dev_port, "3000"}
         resourceRoutes:
             StaticFilesProxyMethod:
-                Uri: 'http://localhost:3001/{file}'
+                Uri: "http://${self:custom.devParams.proxy_host}:${self:custom.devParams.proxy_port}/{file}"
 
     webpack:
         webpackConfig: config/server.webpack.js

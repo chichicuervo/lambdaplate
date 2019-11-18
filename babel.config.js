@@ -18,12 +18,28 @@ const recent = () => {
 	return runtimes[keys[keys.length - 1]]
 }
 
+let node_runtime
 if ( server ) {
 	let { service: { provider: { runtime }}} = sls.lib.serverless || {}
-	runtime = runtimes[runtime] || recent()
+	node_runtime = runtimes[runtime] || recent()
 }
 
 module.exports = function ( api ) {
+
+    const env_preset = server ? {
+        targets : {
+            node: `${node_runtime}`
+        },
+        modules: false,
+        shippedProposals: true
+    } : {
+        targets: {
+            browsers: "defaults",
+            esmodules: true,
+        },
+        modules: 'auto',
+        shippedProposals: true
+    }
 
 	const presets = [
 		['minify', {
@@ -41,22 +57,16 @@ module.exports = function ( api ) {
 				version: 3,
 				proposals: true
 			},
-			server ? ...{
-				targets : {
-					node: `${runtime}`
-				},
-				modules: false,
-				shippedProposals: true
-			} : ...{
-				targets: {
-					browsers: "defaults",
-					esmodules: true,
-				},
-				modules: 'auto',
-				shippedProposals: true
-			}
+			...env_preset,
 		}],
 	]
+
+    const hot_loader = server ? ['react-hot-loader/babel'] : []
+
+    const plugins = [
+        ...hot_loader,
+        '@babel/plugin-proposal-class-properties',
+    ]
 
 	api.cache( false );
 

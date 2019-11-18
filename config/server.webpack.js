@@ -16,10 +16,12 @@ const config = async () => {
 		target: 'node',
 		entry: sls.lib.entries,
 		mode: DEV_MODE ? "development" : "production",
-		externals: [ nodeExternals() ],
+		externals: [ nodeExternals({ // i think we want to explictly exclude assets?
+	        whitelist: [] // i think we /want/ to include static files under node_modules?
+	    }) ],
         optimization: {
             // We don't need to minimize our Lambda code.
-            // minimize: false,
+            minimize: true,
 			sideEffects: true,
 			usedExports: true,
 			minimizer: [
@@ -41,7 +43,7 @@ const config = async () => {
         ],
 		module: {
 			rules: [ {
-				test: /\.js$/,
+				test: /\.(mjs|jsx?)$/,
 				exclude: /node_modules/,
 				use: [ {
 					loader: 'babel-loader',
@@ -49,10 +51,13 @@ const config = async () => {
                         cacheDirectory: true,
                     }
                 } ],
+			}, {
+		        test: /\.mdx?$/,
+		        use: [ 'babel-loader', '@mdx-js/loader' ]
             } ]
 		},
 		output: {
-			libraryTarget: "commonjs2",
+			// libraryTarget: "commonjs2",
 			path: path.resolve( ROOT_DIR, ".webpack" ),
 			filename: "[name].js",
 		}

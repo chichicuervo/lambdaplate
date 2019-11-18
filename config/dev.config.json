@@ -1,0 +1,6 @@
+{
+    "dev_host": "0.0.0.0",
+    "dev_port": "4000",
+    "proxy_host": "localhost",
+    "proxy_port": "4001"
+}
