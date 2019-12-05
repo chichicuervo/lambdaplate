@@ -1,20 +1,12 @@
-export class ApiHandler {
+export class ApiObject {
     constructor(req, res, options = {}) {
-        req.log.trace('ApiHandler:constructor')
+        req.log.trace('ApiObject:constructor')
         this.request = req
         this.response = res
+        this.setOptions(options)
 
         this.timestamp = Math.floor(Date.now() / 1000)
-
-        return async () => {
-            req.log.trace('ApiHandler:resolve')
-            try {
-                return await this.resolve()
-            } catch (error) {
-                req.log.error('ApiHandler:resolve/catch', error)
-                res.error(500)
-            }
-        }
+        this.resolve.bind(this)
     }
 
     get className() {
@@ -31,18 +23,18 @@ export class ApiHandler {
 
     setStore(store = {}) {
         for (let [name, val] of Object.entries(store)) {
-            this.data.set(name, val)
+            this.store.set(name, val)
         }
 
         return this
     }
 
-    store(name, val) {
-        if (!this.data.has(name)) {
-            this.data.set(name, val instanceof Function ? val() : val)
+    set(name, val) {
+        if (!this.store.has(name)) {
+            this.store.set(name, val instanceof Function ? val() : val)
         }
 
-        return this.data.get(name)
+        return this.store.get(name)
     }
 
     get options() {
@@ -123,4 +115,4 @@ export class ApiHandler {
 
 }
 
-export default ApiHandler
+export default ApiObject

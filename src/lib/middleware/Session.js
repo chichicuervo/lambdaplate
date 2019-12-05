@@ -6,13 +6,13 @@ const DEFAULT_HEADER = 'X-Session-Token'
 export class Session extends ApiMiddleware {
 
     constructor(req, res, next, options = {}) {
-        const resolve = super(req, res, next, options)
+        super(req, res, next, { noHandle: true, ...options })
 
         const get = () => this.payload
-        const set = (v) => this.payload = v
+        const set = v => this.payload = v
         Object.defineProperty(req, options.payloadName || 'session', { get, set, enumerable: true })
 
-        return resolve
+        return this.handler
     }
 
     get generator() {
