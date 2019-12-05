@@ -3,7 +3,7 @@ const webpack = require( 'webpack' );
 const sls = require( 'serverless-webpack' );
 const nodeExternals = require( 'webpack-node-externals' );
 
-const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const TerserPlugin = require('terser-webpack-plugin')
 
 const ROOT_DIR = path.resolve(__dirname, "..");
 const DEV_MODE = sls.lib.webpack.isLocal || process.env.IS_OFFLINE || process.env.NODE_ENV !== "production";
@@ -16,16 +16,18 @@ const config = async () => {
 		target: 'node',
 		entry: sls.lib.entries,
 		mode: DEV_MODE ? "development" : "production",
-		externals: [ nodeExternals({ // i think we want to explictly exclude assets?
-	        whitelist: [] // i think we /want/ to include static files under node_modules?
-	    }) ],
+		externals: [ 'aws-sdk',
+			nodeExternals({ // i think we want to explictly exclude assets?
+	        	whitelist: [] // i think we /want/ to include static files under node_modules?
+	    	})
+		],
         optimization: {
             // We don't need to minimize our Lambda code.
             minimize: true,
 			sideEffects: true,
 			usedExports: true,
 			minimizer: [
-				new UglifyJsPlugin()
+				new TerserPlugin()
 			]
         },
         performance: {
@@ -39,7 +41,7 @@ const config = async () => {
 				AWS_REGION: `${region}`,
                 'process.env.BROWSER': false,
                 'process.env.NODE_ENV': DEV_MODE ? '"development"' : '"production"'
-			} )
+			} ),
         ],
 		module: {
 			rules: [ {
@@ -56,8 +58,14 @@ const config = async () => {
 		        use: [ 'babel-loader', '@mdx-js/loader' ]
             } ]
 		},
+		resolve: {
+			modules: [
+                path.resolve( ROOT_DIR, "src/server" ),
+                path.resolve( ROOT_DIR, "node_modules" ),
+            ]
+		},
 		output: {
-			// libraryTarget: "commonjs2",
+			libraryTarget: "umd",
 			path: path.resolve( ROOT_DIR, ".webpack" ),
 			filename: "[name].js",
 		}

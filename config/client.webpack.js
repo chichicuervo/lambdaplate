@@ -8,7 +8,8 @@ const { compact } = require( 'lodash' );
 const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
 const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
 const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
-const UglifyJsPlugin = require( 'uglifyjs-webpack-plugin' );
+const TerserPlugin = require('terser-webpack-plugin')
+const LoadablePlugin = require('@loadable/webpack-plugin')
 
 const ROOT_DIR = path.resolve( __dirname, ".." );
 const DEV_MODE = sls.lib.webpack.isLocal || process.env.IS_OFFLINE || process.env.NODE_ENV !== "production";
@@ -21,7 +22,7 @@ const config = async () => {
 	return {
 		target: 'web',
 		entry: [
-            '@babel/polyfill',
+            path.resolve( ROOT_DIR, 'src/polyfill.js' ),
             path.resolve( ROOT_DIR, 'src/client/index.js' ),
         ],
 		mode: DEV_MODE ? "development" : "production",
@@ -35,15 +36,16 @@ const config = async () => {
 				template: path.resolve(ROOT_DIR, 'src/index.html')
 			} ),
             // DEV_MODE ? new webpack.HotModuleReplacementPlugin() : null,
-            !DEV_MODE && new CleanWebpackPlugin( [ BUILD_DIR ] ),
+            !DEV_MODE && new CleanWebpackPlugin(),
 			!DEV_MODE && new BundleAnalyzerPlugin( {
 				analyzerMode: 'static',
 				openAnalyzer: false
 			} ),
+			new LoadablePlugin(),
         ] ),
 		module: {
 			rules: [ {
-				test: /\.css$/,
+				test: /\.s?css$/,
 				use: [ 'style-loader', 'css-loader' ]
             }, {
 				test: /\.(mjs|jsx?)$/,
@@ -80,8 +82,9 @@ const config = async () => {
 		optimization: {
 			sideEffects: true,
 			usedExports: true,
+			minimize: true,
 			minimizer: [
-				new UglifyJsPlugin()
+				new TerserPlugin()
 			]
 		},
 		output: {
@@ -92,7 +95,7 @@ const config = async () => {
 		resolve: {
 			modules: [
                 path.resolve( ROOT_DIR, "src/client" ),
-                path.resolve( ROOT_DIR, "node_modules" )
+                path.resolve( ROOT_DIR, "node_modules" ),
             ]
 		},
 		devServer: {

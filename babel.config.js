@@ -9,7 +9,8 @@ const server = !!sls.lib.serverless;
  */
 const runtimes = {
 	"nodejs8.10": "8.10",
-	"nodejs10.x": "10.16.3"
+	"nodejs10.x": "10.16.3",
+    "nodejs12.x": "12.13.0",
 }
 
 const recent = () => {
@@ -34,7 +35,7 @@ module.exports = function ( api ) {
         shippedProposals: true
     } : {
         targets: {
-            browsers: "defaults",
+            // browsers: "defaults",
             esmodules: true,
         },
         modules: 'auto',
@@ -66,6 +67,7 @@ module.exports = function ( api ) {
     const plugins = [
         ...hot_loader,
         '@babel/plugin-proposal-class-properties',
+        '@loadable/babel-plugin',
     ]
 
 	api.cache( false );

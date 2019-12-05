@@ -1,6 +1,7 @@
 service: lambda-boilerplate # NOTE: update this with your service name
 
 plugins:
+    - serverless-dotenv-plugin
     - serverless-scriptable-plugin
     - aws-amplify-serverless-plugin
     - serverless-webpack
@@ -11,10 +12,12 @@ plugins:
 
 provider:
     name: aws
-    runtime: nodejs10.x
+    runtime: nodejs12.x
     stage: ${opt:stage, 'dev'}
     region: ${opt:region, 'us-west-2'}
     profile: ${self:custom.profiles.${self:provider.stage}, 'default'}
+    environment:
+        API_PREFIX: ${self:custom.apiPrefix}
 
 package:
     individually: true
@@ -31,7 +34,9 @@ custom:
 
     webpack:
         webpackConfig: config/server.webpack.js
-        includeModules: true
+        includeModules:
+            forceExclude:
+                - aws-sdk
 
     apiPrefix: api
 
