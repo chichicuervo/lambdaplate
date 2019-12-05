@@ -5,7 +5,7 @@ import Api, { ApiHandler } from 'Api';
 const { API_PREFIX, IS_OFFLINE } = process.env;
 
 class Hello extends ApiHandler {
-	function resolve() {
+	resolve() {
 		return {
 			message: 'Go Serverless v1.0! Your function executed successfully!',
 		}
@@ -35,7 +35,7 @@ if (IS_OFFLINE) {
     })
 }
 
-api.get('/api/hello', async (req, res) => (new Hello(req, res))())
+api.get('/hello', async (req, res) => (new Hello(req, res))())
 
 export default async ( event, context ) => {
 	try {

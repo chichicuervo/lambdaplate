@@ -68,7 +68,7 @@ const config = async () => {
 		output: {
 			libraryTarget: "umd",
 			path: path.resolve( ROOT_DIR, ".webpack" ),
-			filename: "[contenthash].js",
+			filename: "[name].js",
 		}
 	}
 }

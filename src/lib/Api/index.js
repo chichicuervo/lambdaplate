@@ -1,6 +1,6 @@
 export * from './ApiHandler'
 export * from './ApiMiddleware'
 
-import Api from 'lambda-api';
-export Api
-export default Api
+import API from 'lambda-api';
+export { API as Api }
+export default API
