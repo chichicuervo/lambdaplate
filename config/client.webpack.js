@@ -89,12 +89,13 @@ const config = async () => {
 		},
 		output: {
 			path: BUILD_DIR,
-			filename: 'assets/[name].js',
+			filename: 'assets/[contenthash].js',
 			publicPath: "/",
 		},
 		resolve: {
 			modules: [
                 path.resolve( ROOT_DIR, "src/client" ),
+				path.resolve( ROOT_DIR, "src/lib" ),
                 path.resolve( ROOT_DIR, "node_modules" ),
             ]
 		},

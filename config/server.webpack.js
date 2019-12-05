@@ -36,7 +36,7 @@ const config = async () => {
         },
 		plugins: [
             new webpack.DefinePlugin( {
-				DEV_MODE: DEV_MODE,
+				DEV_MODE,
 				AWS_ACCOUNT_ID: `${account_id}`,
 				AWS_REGION: `${region}`,
                 'process.env.BROWSER': false,
@@ -61,13 +61,14 @@ const config = async () => {
 		resolve: {
 			modules: [
                 path.resolve( ROOT_DIR, "src/server" ),
+				path.resolve( ROOT_DIR, "src/lib" ),
                 path.resolve( ROOT_DIR, "node_modules" ),
             ]
 		},
 		output: {
 			libraryTarget: "umd",
 			path: path.resolve( ROOT_DIR, ".webpack" ),
-			filename: "[name].js",
+			filename: "[contenthash].js",
 		}
 	}
 }

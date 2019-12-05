@@ -2,7 +2,7 @@
   "name": "boilerplate-lambda",
   "version": "0.0.1",
   "description": "",
-  "main": "index.js",
+  "main": "src/index.js",
   "sideEffects": [
     "*.css"
   ],
@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start:dev": "concurrently \"npm run start:dev:client\" \"npm run start:dev:server\"",
     "start:dev:client": "webpack-dev-server --config config/client.webpack.js",
-    "start:dev:server": "serverless offline",
+    "start:dev:server": "cross-env NODE_ENV=offline serverless offline",
     "build:client": "cross-env NODE_ENV=production webpack --config config/client.webpack.js"
   },
   "author": "",
@@ -18,9 +18,11 @@
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/plugin-proposal-class-properties": "^7.7.0",
-    "@babel/polyfill": "^7.7.0",
     "@babel/preset-env": "^7.7.1",
     "@babel/preset-react": "^7.7.0",
+    "@loadable/babel-plugin": "^5.10.3",
+    "@loadable/webpack-plugin": "^5.7.1",
+    "@mdx-js/loader": "^1.5.1",
     "aws-amplify-serverless-plugin": "^1.4.1",
     "babel-loader": "^8.0.6",
     "babel-preset-minify": "^0.5.1",
@@ -31,7 +33,9 @@
     "file-loader": "^4.2.0",
     "html-webpack-plugin": "^3.2.0",
     "react-hot-loader": "^4.12.18",
+    "regenerator-runtime": "^0.13.3",
     "serverless": "^1.57.0",
+    "serverless-dotenv-plugin": "^2.1.1",
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-offline": "^5.12.0",
     "serverless-s3-remover": "^0.6.0",
@@ -39,7 +43,7 @@
     "serverless-scriptable-plugin": "^1.0.4",
     "serverless-webpack": "^5.3.1",
     "style-loader": "^1.0.0",
-    "uglifyjs-webpack-plugin": "^2.2.0",
+    "terser-webpack-plugin": "^2.2.1",
     "webpack": "^4.41.2",
     "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
@@ -48,9 +52,14 @@
     "webpack-node-externals": "^1.7.2"
   },
   "dependencies": {
+   "@loadable/component": "^5.10.3",
+    "jsonwebtoken": "^8.5.1",
     "lambda-api": "^0.10.4",
     "lodash-es": "^4.17.15",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
-  }
+    "react-dom": "^16.12.0",
+    "typeface-roboto": "0.0.75",
+    "uuid": "^3.3.3",
+    "core-js": "^3.4.1"
+ }
 }
