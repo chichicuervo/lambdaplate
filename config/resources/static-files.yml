@@ -2,7 +2,7 @@ Resources:
     StaticFilesBucket:
         Type: AWS::S3::Bucket
         Properties:
-            BucketName: ${self:custom.StaticFilesBucketName}
+            # BucketName: ${self:custom.StaticFilesBucketName}
             WebsiteConfiguration:
                 IndexDocument: index.html
                 ErrorDocument: error.html
@@ -54,3 +54,9 @@ Resources:
                                 -   - 'arn:aws:s3:::'
                                     - Ref: StaticFilesBucket
                                     - "/*"
+Outputs:
+    StaticFilesBucketOutputKey:
+        Value:
+            Ref: StaticFilesBucket
+        Export:
+            Name: StaticFilesBucketName

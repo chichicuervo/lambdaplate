@@ -29,14 +29,13 @@ Resources:
                 Type: HTTP_PROXY
                 IntegrationHttpMethod: GET
                 # Uri: 'https://s3-${self:provider.region}.amazonaws.com/${self:custom.StaticFilesBucketName}/{file}'
-                Uri: http://${self:custom.StaticFilesBucketName}.s3-website-${self:provider.region}.amazonaws.com/{file}
-                # Uri:
-                #     Fn::Join:
-                #         -   ''
-                #         -   - Fn::GetAtt:
-                #                 - StaticFilesBucket
-                #                 - WebsiteURL
-                #             - "{file}"
+                # Uri: http://${self:custom.StaticFilesBucketName}.s3-website-${self:provider.region}.amazonaws.com/{file}
+                Uri:
+                    Fn::Join:
+                        -   ""
+                        -   - Fn::GetAtt: [StaticFilesBucket, WebsiteURL]
+                            # for SOME REASON... you must comment out the below line on initial deploy, then uncomment and rerun deploy
+                            - /{file}
                 IntegrationResponses:
                     - StatusCode: 200
                 RequestParameters:

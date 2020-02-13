@@ -4,11 +4,10 @@ plugins:
     - serverless-dotenv-plugin
     - serverless-scriptable-plugin
     - aws-amplify-serverless-plugin
+    - serverless-s3-sync
     - serverless-webpack
     - serverless-offline
-    - serverless-s3-remover
     - serverless-iam-roles-per-function
-    - serverless-s3-sync
 
 provider:
     name: aws
@@ -19,8 +18,8 @@ provider:
     environment:
         API_PREFIX: ${self:custom.apiPrefix}
 
-package:
-    individually: true
+# package:
+    # individually: true
 
 custom:
     devParams: ${file(config/dev.config.json)}
@@ -40,20 +39,12 @@ custom:
 
     apiPrefix: api
 
-    StaticFilesBucketName: ${self:service}-${self:provider.stage}-staticfilesbucket
     s3Sync:
-        -   bucketName: ${self:custom.StaticFilesBucketName}
+        -   bucketNameKey: StaticFilesBucketOutputKey
             localDir: dist
 
-    remover:
-        prompt: false
-        buckets:
-            - ${self:custom.StaticFilesBucketName}
-
     scriptHooks:
-        after:deploy:deploy:
-            - serverless s3sync -r ${self:provider.region} -s ${self:provider.stage}
-        before:s3sync:sync:
+        before:deploy:deploy:
             - npm run build:client
 
 functions:

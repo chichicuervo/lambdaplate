@@ -49,7 +49,7 @@ module.exports = function ( api ) {
 		}],
 		["@babel/preset-react", {
 			useBuiltIns: true,
-			useSpread: true,
+			// useSpread: true,
 			// development: process.env.BABEL_ENV === "development"
 		}],
 		["@babel/preset-env", {
