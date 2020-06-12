@@ -20,14 +20,14 @@ Resources:
             RestApiId:
                 Ref: ApiGatewayRestApi
             AuthorizationType: NONE
-            HttpMethod: GET
+            HttpMethod: ANY
             MethodResponses:
                 - StatusCode: 200
             RequestParameters:
                 method.request.path.file: true
             Integration:
                 Type: HTTP_PROXY
-                IntegrationHttpMethod: GET
+                IntegrationHttpMethod: ANY
                 # Uri: 'https://s3-${self:provider.region}.amazonaws.com/${self:custom.StaticFilesBucketName}/{file}'
                 # Uri: http://${self:custom.StaticFilesBucketName}.s3-website-${self:provider.region}.amazonaws.com/{file}
                 Uri:

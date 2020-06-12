@@ -89,7 +89,7 @@ const config = async () => {
 		},
 		output: {
 			path: BUILD_DIR,
-			filename: 'assets/[contenthash].js',
+			filename: DEV_MODE ? 'assets/[hash].js' : 'assets/[contenthash].js',
 			publicPath: "/",
 		},
 		resolve: {
