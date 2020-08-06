@@ -38,6 +38,6 @@ Resources:
                             - /{file}
                 IntegrationResponses:
                     - StatusCode: 200
-                RequestParameters:
-                    integration.request.path.file: method.request.path.file
+                # RequestParameters:
+                #     integration.request.path.file: method.request.path.file
                 PassthroughBehavior: WHEN_NO_MATCH

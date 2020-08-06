@@ -1,0 +1,3 @@
+scriptHooks:
+    before:deploy:deploy:
+        - npm run build:client

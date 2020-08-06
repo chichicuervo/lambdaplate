@@ -6,7 +6,9 @@ plugins:
     - aws-amplify-serverless-plugin
     - serverless-s3-sync
     - serverless-webpack
+    - serverless-dynamodb-local
     - serverless-offline
+    - serverless-offline-sns
     - serverless-iam-roles-per-function
 
 provider:
@@ -17,39 +19,19 @@ provider:
     profile: ${self:custom.profiles.${self:provider.stage}, 'default'}
     environment:
         API_PREFIX: ${self:custom.apiPrefix}
+        # AWS_REGION: ${self:provider.region}
+        ROOT_TOPIC_ARN: ${self:custom.rootTopicArn}
+        RESOURCE_ROOT: ${self:custom.resourceRoot}
+        DEV_DYNAMO_ENDPOINT: "http://localhost:4567"
+        DEV_SNS_ENDPOINT: "http://localhost:4002"
 
 # package:
     # individually: true
 
-custom:
-    devParams: ${file(config/dev.config.json)}
-
-    serverless-offline:
-        host: ${self:custom.devParams.dev_host, "0.0.0.0"}
-        httpPort: ${self:custom.devParams.dev_port, "3000"}
-        noPrependStageInUrl: true
-        resourceRoutes:
-            StaticFilesProxyMethod:
-                Uri: "http://${self:custom.devParams.proxy_host}:${self:custom.devParams.proxy_port}/{file}"
-
-    webpack:
-        webpackConfig: config/server.webpack.js
-        includeModules:
-            forceExclude:
-                - aws-sdk
-
-    apiPrefix: api
-
-    s3Sync:
-        -   bucketNameKey: StaticFilesBucketOutputKey
-            localDir: dist
-
-    scriptHooks:
-        before:deploy:deploy:
-            - npm run build:client
+custom: ${file(config/serverless.custom.js):default}
 
 functions:
-    hello:
+    - hello:
         handler: src/lambda/hello.default
         events:
             - http:
@@ -58,7 +40,6 @@ functions:
                 cors: true
 
 resources:
-    - Resources:
     - ${file(config/resources/static-files.yml)}
     - ${file(config/resources/static-proxy.yml)}
     - ${file(config/resources/cognito-auth.yml)}

@@ -1,0 +1,7 @@
+serverless-offline:
+    host: ${self:custom.devParams.dev_host, "0.0.0.0"}
+    httpPort: ${self:custom.devParams.dev_port, "3000"}
+    noPrependStageInUrl: true
+    resourceRoutes:
+        StaticFilesProxyMethod:
+            Uri: "http://${self:custom.devParams.proxy_host}:${self:custom.devParams.proxy_port}/{file}"

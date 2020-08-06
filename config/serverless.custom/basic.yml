@@ -1,0 +1,7 @@
+devParams: ${file(config/dev.config.json)}
+
+apiPrefix: api
+
+rootTopicArn: "arn:aws:sns:${self:provider.region}:${env:AWS_ACCOUNT_ID}"
+
+resourceRoot: "${self:service}-${self:provider.stage}-"

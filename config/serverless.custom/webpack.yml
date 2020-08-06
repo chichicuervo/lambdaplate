@@ -1,0 +1,5 @@
+webpack:
+    webpackConfig: config/server.webpack.js
+    includeModules:
+        forceExclude:
+            - aws-sdk

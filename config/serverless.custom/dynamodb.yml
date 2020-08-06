@@ -1,0 +1,6 @@
+dynamodb:
+    stages:
+        - dev
+    start:
+        port: 4567
+        noStart: true

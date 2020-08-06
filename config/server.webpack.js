@@ -18,7 +18,7 @@ const config = async () => {
 		mode: DEV_MODE ? "development" : "production",
 		externals: [ 'aws-sdk',
 			nodeExternals({ // i think we want to explictly exclude assets?
-	        	whitelist: [] // i think we /want/ to include static files under node_modules?
+	        	allowlist: [] // i think we /want/ to include static files under node_modules?
 	    	})
 		],
         optimization: {
