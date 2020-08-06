@@ -1,0 +1,6 @@
+Resources:
+    ExampleTopic:
+        Type: AWS::SNS::Topic
+        Properties:
+            DisplayName: ExampleTopic
+            TopicName: ExampleTopic

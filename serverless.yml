@@ -39,8 +39,12 @@ functions:
                 path: /${self:custom.apiPrefix}/hello
                 cors: true
 
+    - ${file(config/examples/sns/functions.yml)}
+
 resources:
     - ${file(config/resources/static-files.yml)}
     - ${file(config/resources/static-proxy.yml)}
     - ${file(config/resources/cognito-auth.yml)}
     - ${file(config/resources/cloudfront.yml)}
+
+    - ${file(config/examples/sns/resources.yml)}

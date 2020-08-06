@@ -27,21 +27,6 @@ if ( server ) {
 
 module.exports = function ( api ) {
 
-    const env_preset = server ? {
-        targets : {
-            node: `${node_runtime}`
-        },
-        modules: false,
-        shippedProposals: true
-    } : {
-        targets: {
-            // browsers: "defaults",
-            esmodules: true,
-        },
-        modules: 'auto',
-        shippedProposals: true
-    }
-
 	const presets = [
 		['minify', {
 			keepFnName: true,
@@ -53,12 +38,19 @@ module.exports = function ( api ) {
 			// development: process.env.BABEL_ENV === "development"
 		}],
 		["@babel/preset-env", {
-			useBuiltIns: "usage",
-            corejs: {
-				version: 3,
-				proposals: true
-			},
-			...env_preset,
+            targets: {
+                esmodules: true,
+                node: node_runtime || true,
+            },
+            // useBuiltIns: "usage",
+            // corejs: {
+            //     version: 3,
+            //     proposals: true
+            // },
+            modules: 'auto',
+            shippedProposals: true,
+            loose: true,
+            bugfixes: true,
 		}],
 	]
 
@@ -66,7 +58,15 @@ module.exports = function ( api ) {
 
     const plugins = [
         ...hot_loader,
-        '@babel/plugin-proposal-class-properties',
+        ["@babel/plugin-proposal-decorators", {
+            legacy: true,
+        }],
+        ['@babel/plugin-proposal-class-properties', {
+            loose: true
+        }],
+        ["@babel/plugin-proposal-private-methods", {
+            loose: true
+        }],
         '@loadable/babel-plugin',
     ]
 

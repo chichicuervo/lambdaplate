@@ -1,0 +1,20 @@
+sns_example:
+    handler: src/lambda/example/sns.http
+    iamRoleStatements:
+        -   Effect: Allow
+            Action:
+                - sns:*
+            Resource:
+                - arn:aws:sns:*:*:*
+    events:
+        -   http:
+                method: ANY
+                path: ${self:custom.apiPrefix}/example/sns
+                cors: true
+
+sns_message:
+    handler: src/lambda/example/sns.sns_msg
+    events:
+        -   sns:
+                arn: ${self:custom.rootTopicArn}:ExampleTopic
+                topicName: ExampleTopic
