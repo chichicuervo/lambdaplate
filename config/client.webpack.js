@@ -104,7 +104,12 @@ const config = async () => {
 			disableHostCheck: true,
 			host: server_params.proxy_host || 'localhost',
 			port: server_params.proxy_port || 3001,
-			hot: true
+			hot: true,
+			watchOptions: {
+				aggregateTimeout: 1000,
+				poll: 350,
+				ignored: /node_modules/,
+			}
 		},
 
 	}

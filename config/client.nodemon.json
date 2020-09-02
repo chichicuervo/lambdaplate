@@ -1,0 +1,10 @@
+{
+    "exec": "webpack-dev-server --config config/client.webpack.js --cache --verbose",
+    "watch": [ "config", "babel.config.js", "serverless.yml" ],
+    "verbose": true,
+    "ext": "js,json,yml",
+    "watchOptions" : {
+        "usePolling": true,
+        "interval": 350
+    }
+}
