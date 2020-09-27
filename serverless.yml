@@ -24,6 +24,17 @@ provider:
         RESOURCE_ROOT: ${self:custom.resourceRoot}
         DEV_DYNAMO_ENDPOINT: "http://localhost:4567"
         DEV_SNS_ENDPOINT: "http://localhost:4002"
+        DEV_WSAPI_ENDPOINT: http://localhost:3001
+        WSAPI_ENDPOINT:
+            Fn::Join:
+              - ''
+              - - https://
+                - Ref: WebsocketsApi
+                - .execute-api.
+                - Ref: AWS::Region
+                - .
+                - Ref: AWS::URLSuffix
+                - /${self:provider.stage}
 
 # package:
     # individually: true
@@ -40,6 +51,7 @@ functions:
                 cors: true
 
     - ${file(config/examples/sns/functions.yml)}
+    - ${file(config/examples/ws/functions.yml)}
 
 resources:
     - ${file(config/resources/static-files.yml)}
