@@ -29,6 +29,7 @@ const config = async () => {
 		plugins: compact( [
             new webpack.DefinePlugin( {
 				DEV_MODE: DEV_MODE,
+				WS_ENDPOINT: '"wss://2nsf6ekguk.execute-api.us-west-2.amazonaws.com/dev"', // i really hate this
 				'process.env.BROWSER': true,
 				'process.env.NODE_ENV': DEV_MODE ? '"development"' : '"production"'
 			} ),

@@ -31,12 +31,29 @@ Resources:
                                 -   - Ref: ApiGatewayRestApi
                                     - ".execute-api."
                                     - Ref: AWS::Region
-                                    - ".amazonaws.com"
+                                    - "."
+                                    - Ref: AWS::URLSuffix
                         CustomOriginConfig:
                             HTTPPort: '80'
                             HTTPSPort: '443'
                             OriginProtocolPolicy: https-only
                             OriginSSLProtocols: [ "TLSv1", "TLSv1.1", "TLSv1.2" ]
+                        OriginPath: /${self:provider.stage}
+                    -   Id: Websocket
+                        DomainName:
+                            Fn::Join:
+                                - ''
+                                -   - Ref: WebsocketsApi
+                                    - ".execute-api."
+                                    - Ref: AWS::Region
+                                    - "."
+                                    - Ref: AWS::URLSuffix
+                        CustomOriginConfig:
+                            OriginProtocolPolicy: match-viewer
+                        #     HTTPPort: '80'
+                        #     HTTPSPort: '443'
+                        #     OriginProtocolPolicy: https-only
+                        #     OriginSSLProtocols: [ "TLSv1", "TLSv1.1", "TLSv1.2" ]
                         OriginPath: /${self:provider.stage}
                 Enabled: true
                 HttpVersion: http2
@@ -80,3 +97,21 @@ Resources:
                         MinTTL: '0'
                         DefaultTTL: '60'
                         ViewerProtocolPolicy: https-only
+                    -   TargetOriginId: Websocket
+                        PathPattern: ws/*
+                        ViewerProtocolPolicy: allow-all
+                        # AllowedMethods: [HEAD, GET]
+                        ForwardedValues:
+                            QueryString: false
+                    #         Headers:
+                    #             # - Upgrade
+                    #             # - Connection
+                    #             - Origin
+                    #             - Authorization
+                    #             - Sec-WebSocket-Key
+                    #             - Sec-WebSocket-Protocol
+                    #             - Sec-WebSocket-Version
+                    #             - Sec-WebSocket-Protocol
+                    #             - Sec-WebSocket-Extensions
+                    #     MinTTL: '0'
+                    #     DefaultTTL: '0'
