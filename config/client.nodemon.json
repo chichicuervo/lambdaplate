@@ -1,5 +1,5 @@
 {
-    "exec": "webpack-dev-server --config config/client.webpack.js --cache --verbose",
+    "exec": "webpack serve --config config/client.webpack.js",
     "watch": [ "config", "babel.config.js", "serverless.yml" ],
     "verbose": true,
     "ext": "js,json,yml",
