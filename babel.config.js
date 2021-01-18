@@ -1,14 +1,12 @@
-const sls = require( 'serverless-webpack' );
+const sls = require( 'serverless-webpack' )
 
-const server = !!sls.lib.serverless;
-
+const server = !!sls.lib.serverless
 
 /**
  * LIST FROM AWS DOCS
  * https://docs.aws.amazon.com/lambda/latest/dg/lambda-runtimes.html
  */
 const runtimes = {
-	"nodejs8.10": "8.10",
 	"nodejs10.x": "10.16.3",
     "nodejs12.x": "12.13.0",
 }
@@ -54,10 +52,8 @@ module.exports = function ( api ) {
 		}],
 	]
 
-    const hot_loader = server ? ['react-hot-loader/babel'] : []
-
     const plugins = [
-        ...hot_loader,
+        // !server && ['react-refresh/babel', { skipEnvCheck: true }],
         ["@babel/plugin-proposal-decorators", {
             legacy: true,
         }],
@@ -68,12 +64,12 @@ module.exports = function ( api ) {
             loose: true
         }],
         '@loadable/babel-plugin',
-    ]
+    ].filter(Boolean)
 
-	api.cache( false );
+	api.cache( false )
 
 	return {
 		presets,
 		plugins
-	};
+	}
 }

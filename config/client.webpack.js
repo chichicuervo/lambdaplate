@@ -1,18 +1,17 @@
 const fs = require('fs')
-const path = require( 'path' );
-const webpack = require( 'webpack' );
-const sls = require( 'serverless-webpack' );
+const path = require( 'path' )
+const webpack = require( 'webpack' )
+const sls = require( 'serverless-webpack' )
 
-const { compact } = require( 'lodash' );
-
-const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' );
-const HtmlWebpackPlugin = require( 'html-webpack-plugin' );
-const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin;
+const { CleanWebpackPlugin } = require( 'clean-webpack-plugin' )
+const HtmlWebpackPlugin = require( 'html-webpack-plugin' )
+const BundleAnalyzerPlugin = require( 'webpack-bundle-analyzer' ).BundleAnalyzerPlugin
 const TerserPlugin = require('terser-webpack-plugin')
 const LoadablePlugin = require('@loadable/webpack-plugin')
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin')
 
-const ROOT_DIR = path.resolve( __dirname, ".." );
-const DEV_MODE = sls.lib.webpack.isLocal || process.env.IS_OFFLINE || process.env.NODE_ENV !== "production";
+const ROOT_DIR = path.resolve( __dirname, ".." )
+const DEV_MODE = sls.lib.webpack.isLocal || process.env.IS_OFFLINE || process.env.NODE_ENV !== "production"
 const BUILD_DIR = path.resolve( ROOT_DIR, "dist" )
 
 const config = async () => {
@@ -26,7 +25,10 @@ const config = async () => {
             path.resolve( ROOT_DIR, 'src/client/index.js' ),
         ],
 		mode: DEV_MODE ? "development" : "production",
-		plugins: compact( [
+		plugins: [
+			new webpack.ProvidePlugin( {
+				process: 'process/browser',
+			}),
             new webpack.DefinePlugin( {
 				DEV_MODE: DEV_MODE,
 				WS_ENDPOINT: '"wss://2nsf6ekguk.execute-api.us-west-2.amazonaws.com/dev"', // i really hate this
@@ -36,21 +38,32 @@ const config = async () => {
             new HtmlWebpackPlugin( {
 				template: path.resolve(ROOT_DIR, 'src/index.html')
 			} ),
-            // DEV_MODE ? new webpack.HotModuleReplacementPlugin() : null,
-            !DEV_MODE && new CleanWebpackPlugin(),
-			!DEV_MODE && new BundleAnalyzerPlugin( {
-				analyzerMode: 'static',
-				openAnalyzer: false
-			} ),
+			...( DEV_MODE ? [
+				// new webpack.HotModuleReplacementPlugin(),
+				new ReactRefreshWebpackPlugin({
+					overlay: {
+						sockIntegration: 'wds'
+					}
+				}),
+			] : [
+				new CleanWebpackPlugin(),
+				new BundleAnalyzerPlugin( {
+					analyzerMode: 'static',
+					openAnalyzer: false
+				} )
+			]),
 			new LoadablePlugin(),
-        ] ),
+        ].filter(Boolean),
 		module: {
 			rules: [ {
 				test: /\.s?css$/,
 				use: [ 'style-loader', 'css-loader' ]
             }, {
-				test: /\.(mjs|jsx?)$/,
+				test: /\.(mjs|[jt]sx?)$/,
 				exclude: /node_modules/,
+				resolve: {
+					fullySpecified: false
+				},
 				use: {
 					loader: 'babel-loader',
 					options: {
@@ -90,7 +103,7 @@ const config = async () => {
 		},
 		output: {
 			path: BUILD_DIR,
-			filename: DEV_MODE ? 'assets/[hash].js' : 'assets/[contenthash].js',
+			filename: DEV_MODE ? 'assets/[fullhash].js' : 'assets/[contenthash].js',
 			publicPath: "/",
 		},
 		resolve: {

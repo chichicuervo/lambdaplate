@@ -17,6 +17,8 @@ provider:
     stage: ${opt:stage, 'dev'}
     region: ${opt:region, 'us-west-2'}
     profile: ${self:custom.profiles.${self:provider.stage}, 'default'}
+    apiGateway:
+        shouldStartNameWithService: true 
     environment:
         API_PREFIX: ${self:custom.apiPrefix}
         # AWS_REGION: ${self:provider.region}

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { hot } from 'react-hot-loader'
 import useWebSocket from 'react-use-websocket'
 
 const debug = DEV_MODE || false
@@ -29,4 +28,4 @@ const App = () => {
     )
 }
 
-export default hot(module)(App)
+export default App
